@@ -1,41 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import Testok from './Test/Testok';
 
-const MyFisrtComponent = ()=>{
-  return (
-    <div className="1">
-      my component first
-    </div>
-  )
-  }
 function App() {
-  const [count, setCount] = useState(0)
+  const name = "tuudeptrai";
+  const age = 22;
+  const info = {
+    gender : "male",
+    address : "abc",
+  }
+  const handleTest=(name:string)=>{
+  
+  }
+  const [todoList, setTodoList] = useState(["a","ba"]);
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Testok
+        name={name}
+        age={age}
+        info={info}
+        handleTest={handleTest}
+        todoList={todoList}
+        setTodoList={setTodoList}
+        />
+        {todoList.map((item, index)=>{
+                return(
+                    
+                    <div key={`${index}-abc`} >{item}</div>
+                    
+                    
+                )
+            })}
       </div>
-      <MyFisrtComponent/>
-      <h1>tuudeptrai React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     
     </>
   )
 }
