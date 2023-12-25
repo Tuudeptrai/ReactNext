@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../../style/user.scss';
-import { Table,Button,Modal ,Input  } from 'antd';
+import { Table,Button,Modal ,Input ,notification  } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -17,6 +17,7 @@ interface Iusers{
     updatedAt:string;
 }
 const UsersTable = () => {
+    const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjU4NjdmNDMzMDcwZDMzNTRhODc0NjFmIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJhZGRyZXNzIjoiVmlldE5hbSIsImlzVmVyaWZ5Ijp0cnVlLCJuYW1lIjoiSSdtIGFkbWluIiwidHlwZSI6IlNZU1RFTSIsInJvbGUiOiJBRE1JTiIsImdlbmRlciI6Ik1BTEUiLCJhZ2UiOjY5LCJpYXQiOjE3MDM0OTQ4MTQsImV4cCI6MTc4OTg5NDgxNH0.GkRblu6E-kPld_LxGF7UMYo5ZdqCkq5xoMPX2J2Evm0";
     const [ name, setName] = useState("");
     const [ email, setEmail] = useState("");
     const [ age, setAge] = useState("");
@@ -25,6 +26,7 @@ const UsersTable = () => {
     const [ address, setAddress] = useState("");
     const [ role, setRole] = useState("");
     const [listUsers, setListUsers] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const getData = async ()=>{
         const res = await fetch("http://localhost:8000/api/v1/auth/login", {
             method: "POST",
@@ -40,7 +42,7 @@ const UsersTable = () => {
         const data = await res.json();
         console.log('data',data);
     }
-    const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjU4NjdmNDMzMDcwZDMzNTRhODc0NjFmIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJhZGRyZXNzIjoiVmlldE5hbSIsImlzVmVyaWZ5Ijp0cnVlLCJuYW1lIjoiSSdtIGFkbWluIiwidHlwZSI6IlNZU1RFTSIsInJvbGUiOiJBRE1JTiIsImdlbmRlciI6Ik1BTEUiLCJhZ2UiOjY5LCJpYXQiOjE3MDM0NzQ0MDEsImV4cCI6MTc4OTg3NDQwMX0.68AqqRyk7bcDb53RLe_rZ_KjYk8BqqIThfujI1Pu39s";
+    
     const getAllUser = async ()=>{
         const res = await fetch("http://localhost:8000/api/v1/users/all", {
             method: "GET",
@@ -80,28 +82,57 @@ const UsersTable = () => {
             dataIndex: 'role'
         }
     ]
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const showModal = () => {
-      setIsModalOpen(true);
-    };
   
-    const handleOk = () => {
+
+   
+  
+    const handleOk =async () => {
         const data = {name, email, password,age,gender, role, address}
         console.log('check dataform',data);
-    //   setIsModalOpen(false);
+    //  call api
+        const res = await fetch("http://localhost:8000/api/v1/users", {
+        method: "POST",
+        
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`,
+          },
+        body:JSON.stringify({...data})
+    })
+    const d = await res.json();
+    console.log('data create user',d.data);
+    if(d.data){
+        await getAllUser();
+        handleCloseModal();
+        notification.success({
+            message: JSON.stringify(d.message)
+        });
+    }else{
+        notification.error({
+            message: JSON.stringify(d.message)
+        });
+    }
     };
   
-    const handleCancel = () => {
-      setIsModalOpen(false);
-    };
+   const handleCloseModal =()=>{
+        setIsModalOpen(false);
+        setName("");
+        setAddress("");
+        setAge("");
+        setEmail("");
+        setGender("");
+        setPassWord("");
+        setRole("");
+   }
+      
+  
   
    
     return (
         <div >
             <div className='headerTable'>
             <h2>Users Table</h2>
-            <div><Button icon={<PlusOutlined />} onClick={showModal} >Add new user</Button></div>
+            <div><Button icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >Add new user</Button></div>
                 
             </div>
             
@@ -115,7 +146,7 @@ const UsersTable = () => {
                 <Modal title="Add new user" 
                 open={isModalOpen} 
                 onOk={handleOk} 
-                onCancel={handleCancel}
+                onCancel={()=>handleCloseModal()}
                 maskClosable={false}
                 >
                    <div>
