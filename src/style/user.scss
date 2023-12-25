@@ -1,15 +1,11 @@
-body, html, div, p, table {
+body, html, div, table {
+  width: 100%;
     margin: 0;
     padding: 0;
-    border: 0;
-  }
-  .table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 100%;
-    margin: 0;
-    padding: 0;
   }
+ 
     
     td, th {
       border: 1px solid #dddddd;
