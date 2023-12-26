@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../../style/user.scss';
-import { Table,Button, notification  } from 'antd';
+import { Table,Button, notification, Popconfirm, message  } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './CreateUserModal';
@@ -63,7 +63,10 @@ const UsersTable = () => {
     useEffect(()=>{
         getData();
         getAllUser();
-    },[])
+    },[]);
+    const confirm = () => {
+        message.success('Click on Yes');
+      };
     const conlums: ColumnsType<Iusers> = [
         { 
         title: 'Email',
@@ -87,11 +90,22 @@ const UsersTable = () => {
             render :(value,record)=>{
                 return(
                    <div>
-                    <Button type='primary' onClick={()=>{
+                    <Button style={{borderColor:"green", color:"green"}} onClick={()=>{
                         
                         setDataUpdate(record);
                         setIsUpdateModalOpen(true);
                         }}>Edit</Button>
+                     <Popconfirm
+                            title="Delete the task"
+                            description={`Are you sure to delete this user: ${record.name}`}
+                            onConfirm={confirm}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                        <Button type='default' style={{marginLeft:"10px"}} danger onClick={()=>{
+                        }}>Delete</Button>
+                        </Popconfirm>
+                    
                     </div>
                 )
             }
