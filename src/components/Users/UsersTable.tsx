@@ -64,8 +64,27 @@ const UsersTable = () => {
         getData();
         getAllUser();
     },[]);
-    const confirm = () => {
-        message.success('Click on Yes');
+    const confirm =async (user:Iusers) => {
+        const res = await fetch(`http://localhost:8000/api/v1/users/${user._id}`, {
+            method: "DELETE",
+            
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`,
+              },
+        })
+        const d = await res.json();
+        if(!d.data){
+            notification.error({
+                message: JSON.stringify(d.message)
+            })
+        }else{
+            notification.success({
+                message: JSON.stringify(d.message)
+            })
+            getAllUser()
+        }
+       
       };
     const conlums: ColumnsType<Iusers> = [
         { 
@@ -96,15 +115,16 @@ const UsersTable = () => {
                         setIsUpdateModalOpen(true);
                         }}>Edit</Button>
                      <Popconfirm
-                            title="Delete the task"
-                            description={`Are you sure to delete this user: ${record.name}`}
-                            onConfirm={confirm}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                        <Button type='default' style={{marginLeft:"10px"}} danger onClick={()=>{
+                        title="Delete the task"
+                        description={`Are you sure to delete this user: ${record.name}`}
+                        onConfirm={() => confirm(record)}  
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button type='default' style={{marginLeft:"10px"}} danger onClick={() => {
+                            // Handle delete action if needed
                         }}>Delete</Button>
-                        </Popconfirm>
+                    </Popconfirm>
                     
                     </div>
                 )
