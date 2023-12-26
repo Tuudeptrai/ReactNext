@@ -20,7 +20,7 @@ const UpdateUserModal = (props:Iprops) => {
     const [ gender, setGender] = useState("");
     const [ address, setAddress] = useState("");
     const [ role, setRole] = useState("");
-    console.log('dataUpdate',dataUpdate);
+    // console.log('dataUpdate',dataUpdate);
     useEffect(()=>{
         if(dataUpdate){
             setName(dataUpdate.name);
