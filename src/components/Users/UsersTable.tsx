@@ -26,10 +26,17 @@ const UsersTable = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState<null|Iusers>(null);
+    const [meta, setMeta] = useState({
+        current:1,
+        pageSize: 6,
+        page: 0,
+        total: 0
+    });
    
-    
-    const getAllUser = async ()=>{
-        const res = await fetch("http://localhost:8000/api/v1/users/all", {
+    const handelOnChange = async(page:number,pageSize:number )=>{
+        
+        console.log('page , pageSize',page,pageSize);
+        const res = await fetch(`http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`, {
             method: "GET",
             
             headers: {
@@ -44,6 +51,35 @@ const UsersTable = () => {
             })
         }
         setListUsers(d.data.result);
+        setMeta({
+            current:d.data.meta.current,
+            pageSize: d.data.meta.pageSize,
+            page: d.data.meta.page,
+            total: d.data.meta.total
+        })
+    }
+    const getAllUser = async ()=>{
+        const res = await fetch(`http://localhost:8000/api/v1/users?current=${meta.current}&pageSize=${meta.pageSize}`, {
+            method: "GET",
+            
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`,
+              },
+        })
+        const d = await res.json();
+        if(!d.data){
+            notification.error({
+                message: JSON.stringify(d.message)
+            })
+        }
+        setListUsers(d.data.result);
+        setMeta({
+            current:d.data.meta.current,
+            pageSize: 6,
+            page: d.data.meta.page,
+            total: d.data.meta.total
+        })
         
     }
     useEffect(()=>{
@@ -130,6 +166,15 @@ const UsersTable = () => {
                 columns={conlums}
                 dataSource={listUsers}
                 rowKey={"_id"}
+                pagination={{
+                    current: meta.current,
+                    pageSize: meta.pageSize,
+                    total: meta.total,
+                    showTotal:(total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                    onChange:(page:number,pageSize:number) => handelOnChange(page,pageSize),
+                    showSizeChanger: true
+                }}
+                 
                 />
                <CreateUserModal 
                getAllUser={getAllUser}
