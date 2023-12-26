@@ -34,17 +34,17 @@ const UpdateUserModal = (props:Iprops) => {
        
     },[dataUpdate])
     const handleOk =async () => {
-        const data = {name, email, password,age,gender, role, address}
+        const data = {_id:dataUpdate?._id,name, email, password,age,gender, role, address}
         console.log('check dataform',data);
     //  call api
         const res = await fetch("http://localhost:8000/api/v1/users", {
-        method: "POST",
+        method: "PATCH",
         
         headers: {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`,
           },
-        body:JSON.stringify({...data})
+        body:JSON.stringify(data)
     })
     const d = await res.json();
     console.log('data Update user',d.data);
@@ -97,6 +97,7 @@ const UpdateUserModal = (props:Iprops) => {
                    <div>
                     <label>Password:</label>
                     <Input
+                    disabled
                     value={password}
                     onChange={(event)=>setPassWord(event.target.value)}
                     />

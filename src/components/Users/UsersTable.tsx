@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../../style/user.scss';
-import { Table,Button  } from 'antd';
+import { Table,Button, notification  } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './CreateUserModal';
@@ -52,15 +52,17 @@ const UsersTable = () => {
               },
         })
         const d = await res.json();
-        console.log('data user',d.data.result);
+        if(!d.data){
+            notification.error({
+                message: JSON.stringify(d.message)
+            })
+        }
         setListUsers(d.data.result);
         
     }
     useEffect(()=>{
-       
         getData();
         getAllUser();
-        console.log('list',listUsers);
     },[])
     const conlums: ColumnsType<Iusers> = [
         { 
