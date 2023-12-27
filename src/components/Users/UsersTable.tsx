@@ -76,7 +76,7 @@ const UsersTable = () => {
         setListUsers(d.data.result);
         setMeta({
             current:d.data.meta.current,
-            pageSize: 6,
+            pageSize: d.data.meta.pageSize,
             page: d.data.meta.page,
             total: d.data.meta.total
         })
