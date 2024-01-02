@@ -9,9 +9,11 @@ import {
   Link,
 } from "react-router-dom";
 import UsersPage from './screens/UsersPage.tsx';
-import { UserOutlined, HomeOutlined  } from '@ant-design/icons';
+import { UserOutlined, HomeOutlined ,AudioOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import TrackManage from './components/Tracks/TrackManage.tsx';
+import TracksPage from './screens/TracksPage.tsx';
 
 const items: MenuProps['items'] = [
   {
@@ -23,6 +25,11 @@ const items: MenuProps['items'] = [
     label: <Link to='/users'>Manage Users</Link>,
     key: 'users',
     icon: <UserOutlined />,
+  },
+  {
+    label: <Link to='/tracks'>Manage Tracks</Link>,
+    key: 'tracks',
+    icon: <AudioOutlined />,
   },
 ];
 const Headers: React.FC = () => {
@@ -80,13 +87,14 @@ const router = createBrowserRouter([
         path: "users",
         element: <UsersPage/>,
       },
+      {
+        path: "/tracks",
+        element: <TracksPage/>,
+      },
     ]
   },
  
-  {
-    path: "/tracks",
-    element: <div>manage tracks</div>,
-  },
+  
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
